@@ -64,10 +64,10 @@ sub getCell {
     my $y = shift;
     # print "\t\tChecking $x $y..";
     if ($x < 0 || $y < 0 || $x >= $xSize || $y >= $ySize) {
-        # print "OUT OF BOUNDS!\n";
+        
         return DEAD;
     } else {
-        # print $board[$x][$y] . "\n";
+        
         return $board[$x][$y];
     }
 }
@@ -85,16 +85,6 @@ sub getNumNeighborsAlive {
     if (getCell($x + 1, $y)     == ALIVE) { $count ++; }
     if (getCell($x + 1, $y + 1) == ALIVE) { $count ++; }
     
-    #DEBUG
-    #if (getCell($x - 1, $y - 1) == ALIVE) { print "\t-1,-1 ($x - 1, $y - 1) alive\n"; }
-    #if (getCell($x - 1, $y)     == ALIVE) { print "\t-1, 0 ($x - 1, $y) alive\n"; }
-    #if (getCell($x - 1, $y + 1) == ALIVE) { print "\t-1,+1 ($x - 1, $y + 1) alive\n"; }
-    #if (getCell($x, $y - 1)     == ALIVE) { print "\t0, -1 ($x, $y - 1) alive\n";}
-    #if (getCell($x, $y + 1)     == ALIVE) { print "\t0, +1 ($x, $y + 1) alive\n";}
-    #if (getCell($x + 1, $y - 1) == ALIVE) { print "\t+1, -1 ($x + 1, $y - 1) alive\n"; }
-    #if (getCell($x + 1, $y)     == ALIVE) { print "\t+1, 0 ($x + 1, $y)  alive\n"; }
-    #if (getCell($x + 1, $y + 1) == ALIVE) { print "\t+1, +1 ($x + 1, $y + 1) alive\n"; }
-    #
     return $count;
 }
 
@@ -108,7 +98,7 @@ sub statusNextRound {
     my $y = shift;
     my $currentState = getCell($x, $y);
     my $numNeighbors = getNumNeighborsAlive($x, $y);
-    # print "$x $y has $numNeighbors neighbors\n";
+    
     if ($currentState == ALIVE) {
         if ($numNeighbors < 2 || $numNeighbors > 3) {
             return DEAD;
@@ -183,7 +173,7 @@ sub initCells {
         @cells = split(/;/, $tmpInput);
         print @cells;
         for my $oneCell (@cells) {
-            # print "Setting one cell!\n";
+            
             if ($oneCell =~ /,/) {
                 @coords = split(/,/, $oneCell);
                 setCell($coords[0], $coords[1]);
@@ -207,8 +197,8 @@ sub printHelp() {
     print "? - Print this help text\n";
     print "n - /N/ext iteration\n";
     print "q - /Q/uit\n";
-    print "s - /S/ave state to file\n";
-    print "l - /L/oad state from file\n";
+    print "s - /S/ave state to file (NOT IMPLEMENTED!)\n";
+    print "l - /L/oad state from file (NOT IMPLEMENTED!)\n";
     print "<positive integer> - Run this number of iterations\n";
 }
 
@@ -216,9 +206,8 @@ sub printHelp() {
 # a way that doesn't involve copying an array twice (!).
 
 sub iterate {
-    # my @boardCopy;
-    my @boardCopy;
     
+    my @boardCopy;
     
     # Make a copy (initially all DEAD's, but it doesn't really matter)
     my @tmp;
@@ -248,11 +237,11 @@ sub iterate {
 }
 
 sub saveToFile {
-    
+    # TODO
 }
 
 sub loadFromFile {
-    
+    # TODO
 }
 
 sub run() {
