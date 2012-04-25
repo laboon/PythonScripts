@@ -1,7 +1,8 @@
-Various Python scripts, mostly math-related.
+Various Python (and perl) scripts, mostly math-related.
 The euler*.py ones are all Project Euler scripts.
 collatz shows the high-water mark for a collatz series.
 ElementName tries to make a string out of element abbrevs.
 Sieve is the Sieve of Eratosthenes.
 Aliquot analyzes Aliquot sequences.
+life.pl is a simple implementation of Conway's Game of Life.
 

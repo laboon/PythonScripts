@@ -18,6 +18,13 @@ our $ySize;
 our $deadChar = '.';
 our $liveChar = 'X';
 
+sub stripWhitespace {
+    my $toReturn = shift;
+    $toReturn =~ s/^\s+//;
+    $toReturn =~ s/\s+$//;
+    return $toReturn;
+}
+
 sub readPosInt {
     my $prompt = shift;
     my $retVal = -1;
@@ -55,9 +62,12 @@ sub setCell {
 sub getCell {
     my $x = shift;
     my $y = shift;
+    # print "\t\tChecking $x $y..";
     if ($x < 0 || $y < 0 || $x >= $xSize || $y >= $ySize) {
+        # print "OUT OF BOUNDS!\n";
         return DEAD;
     } else {
+        # print $board[$x][$y] . "\n";
         return $board[$x][$y];
     }
 }
@@ -74,6 +84,17 @@ sub getNumNeighborsAlive {
     if (getCell($x + 1, $y - 1) == ALIVE) { $count ++; }
     if (getCell($x + 1, $y)     == ALIVE) { $count ++; }
     if (getCell($x + 1, $y + 1) == ALIVE) { $count ++; }
+    
+    #DEBUG
+    #if (getCell($x - 1, $y - 1) == ALIVE) { print "\t-1,-1 ($x - 1, $y - 1) alive\n"; }
+    #if (getCell($x - 1, $y)     == ALIVE) { print "\t-1, 0 ($x - 1, $y) alive\n"; }
+    #if (getCell($x - 1, $y + 1) == ALIVE) { print "\t-1,+1 ($x - 1, $y + 1) alive\n"; }
+    #if (getCell($x, $y - 1)     == ALIVE) { print "\t0, -1 ($x, $y - 1) alive\n";}
+    #if (getCell($x, $y + 1)     == ALIVE) { print "\t0, +1 ($x, $y + 1) alive\n";}
+    #if (getCell($x + 1, $y - 1) == ALIVE) { print "\t+1, -1 ($x + 1, $y - 1) alive\n"; }
+    #if (getCell($x + 1, $y)     == ALIVE) { print "\t+1, 0 ($x + 1, $y)  alive\n"; }
+    #if (getCell($x + 1, $y + 1) == ALIVE) { print "\t+1, +1 ($x + 1, $y + 1) alive\n"; }
+    #
     return $count;
 }
 
@@ -154,14 +175,15 @@ sub initCells {
     print "Either type a percentage to toggle, or enter specific cells to toggle in the format x,y;\n";
     my $tmpInput = <STDIN>;
     chomp $tmpInput;
+    $tmpInput = stripWhitespace($tmpInput);
     if ($tmpInput =~ /%/) {
         # Get the percentage value, everything before the percentage sign
         setRandom(substr($tmpInput, 0, index($tmpInput, '%')));
     } else {
-        @cells = split(/\;/, <STDIN>);
+        @cells = split(/;/, $tmpInput);
         print @cells;
         for my $oneCell (@cells) {
-            print "Setting one cell!\n";
+            # print "Setting one cell!\n";
             if ($oneCell =~ /,/) {
                 @coords = split(/,/, $oneCell);
                 setCell($coords[0], $coords[1]);
@@ -190,8 +212,24 @@ sub printHelp() {
     print "<positive integer> - Run this number of iterations\n";
 }
 
+# This is really, really, really suboptimal.  I should do this in
+# a way that doesn't involve copying an array twice (!).
+
 sub iterate {
-    my @boardCopy = @board;
+    # my @boardCopy;
+    my @boardCopy;
+    
+    
+    # Make a copy (initially all DEAD's, but it doesn't really matter)
+    my @tmp;
+    for my $j (0 .. ($xSize - 1)) {
+        for my $k (0 .. ($ySize - 1)) {
+            push @tmp, DEAD;
+        }
+        push @boardCopy, [ @tmp ];
+    }
+    
+    # Run the iterations on the copy based on data in original
     my $tmpStatus;
     for my $j (0 .. ($xSize - 1)) {
         for my $k (0 .. ($ySize - 1)) {
@@ -200,6 +238,7 @@ sub iterate {
         }
     }
     
+    # Move the copy back over
     for my $j (0 .. ($xSize - 1)) {
         for my $k (0 .. ($ySize - 1)) {
             $board[$j][$k] = $boardCopy[$j][$k];
@@ -208,6 +247,13 @@ sub iterate {
     
 }
 
+sub saveToFile {
+    
+}
+
+sub loadFromFile {
+    
+}
 
 sub run() {
     my $changed = TRUE;
@@ -229,9 +275,9 @@ sub run() {
                 iterate();
             }
         } elsif ($tmpInput eq 's') {
-            print "Save coming later...\n";
+            print "Save not yet implemented...\n";
         } elsif ($tmpInput eq 'l') {
-            print "Load coming later...\n";
+            print "Load not yet implemented...\n";
         } elsif ($tmpInput eq 'q') {
             $cont = FALSE;
         } elsif ($tmpInput eq '?') {
@@ -243,6 +289,7 @@ sub run() {
             printHelp();
         }
     }
+    print "Exiting...\n";
 }
 
 
