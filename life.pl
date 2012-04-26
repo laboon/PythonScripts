@@ -196,6 +196,7 @@ sub printHelp() {
     print "Perl Life Commands\n";
     print "? - Print this help text\n";
     print "n - /N/ext iteration\n";
+    print "r - /R/un\n";
     print "q - /Q/uit\n";
     print "s - /S/ave state to file (NOT IMPLEMENTED!)\n";
     print "l - /L/oad state from file (NOT IMPLEMENTED!)\n";
@@ -267,6 +268,11 @@ sub run() {
             print "Save not yet implemented...\n";
         } elsif ($tmpInput eq 'l') {
             print "Load not yet implemented...\n";
+        } elsif ($tmpInput eq 'r') {
+            while (TRUE) {
+                iterate();
+                printBoard();
+            }
         } elsif ($tmpInput eq 'q') {
             $cont = FALSE;
         } elsif ($tmpInput eq '?') {
